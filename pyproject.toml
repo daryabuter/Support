@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "support_test"
+version = "0.1.0"
+description = ""
+authors = ["securitsa <khitricov.e@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+Django = "^4.0.2"
+djangorestframework = "^3.13.1"
+psycopg2-binary = "^2.9.3"
+djangorestframework-jwt = "^1.11.0"
+transaction = "^3.0.1"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
