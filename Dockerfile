@@ -15,4 +15,4 @@ RUN poetry config virtualenvs.create false \
   && poetry install
 COPY . /app
 
-#CMD ["./entrypoint.sh"]
+CMD ["./entrypoint.sh"]
