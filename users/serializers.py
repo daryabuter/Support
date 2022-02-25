@@ -3,9 +3,15 @@ from .models import User
 
 
 class UserSerializer(serializers.ModelSerializer):
-    date_joined = serializers.ReadOnlyField()
+    """Serializing user registration"""
 
-    class Meta(object):
+    password = serializers.CharField(max_length=128, min_length=8, write_only=True)
+
+    token = serializers.CharField(max_length=255, read_only=True)
+
+    class Meta:
         model = User
-        fields = ('id', 'email', 'first_name', 'last_name', 'date_joined', 'password')
-        extra_kwargs = {'password': {'write_only': True}}
+        fields = ['email', 'first_name', 'second_name', 'password', 'token']
+
+    def create(self, validated_data):
+        return User.objects.create_user(**validated_data)
