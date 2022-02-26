@@ -1,4 +1,4 @@
-from .serializers import UserSerializer
+from .serializers import RegistrationSerializer
 from .renderers import UserJSONRenderer
 
 from rest_framework import status, viewsets
@@ -11,10 +11,10 @@ class RegistrationViewSet(viewsets.ViewSet):
 
     permission_classes = (AllowAny,)
     renderer_classes = (UserJSONRenderer,)
-    serializer_class = UserSerializer
+    serializer_class = RegistrationSerializer
 
-    def post(self, request):
-        user = request.data.get('user, {}')
+    def create(self, request):
+        user = request.data.get('user', {})
         serializer = self.serializer_class(data=user)
         serializer.is_valid(raise_exception=True)
         serializer.save()

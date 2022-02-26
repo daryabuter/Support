@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
-from datetime import datetime
 
+from datetime import datetime
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
@@ -14,20 +14,20 @@ class UserManager(BaseUserManager):
     User manager class.
     """
 
-    def create_user(self, first_name, second_name, email, password=None):
+    def create_user(self, email, first_name, last_name, password=None):
         """
         Creates and returns a user.
         """
         if first_name is None:
             raise TypeError('Users must have a first name.')
 
-        if second_name is None:
+        if last_name is None:
             raise TypeError('Users must have a second name.')
 
         if email is None:
             raise TypeError('Users must have an email address.')
 
-        user = self.model(first_name=first_name, second_name=second_name, email=self.normalize_email(email))
+        user = self.model(first_name=first_name, last_name=last_name, email=self.normalize_email(email))
         user.set_password(password)
         user.save()
 
@@ -65,10 +65,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name']
 
-    def save(self, *args, **kwargs):
-        super(User, self).save(*args, **kwargs)
-        return self
-
     def __str__(self):
         return self.email
 
@@ -85,6 +81,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     def _generate_jwt_token(self):
         dt = datetime.now() + settings.SIMPLE_JWT["ACCESS_TOKEN_LIFETIME"]
 
-        token = jwt.encode({'id': self.pk, 'exp': int(dt.strftime('%s'))}, settings.SECRET_KEY, algorithm='HS256')
+        token = jwt.encode(
+            {'id': self.pk, 'exp': dt.utcfromtimestamp(dt.timestamp())},
+            settings.SECRET_KEY,
+            algorithm=settings.SIMPLE_JWT["ALGORITHM"],
+        )
 
-        return token.decode('utf-8')
+        return token
