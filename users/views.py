@@ -1,14 +1,16 @@
-from rest_framework import status
+from .serializers import UserSerializer
+from .renderers import UserJSONRenderer
+
+from rest_framework import status, viewsets
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from rest_framework.views import APIView
-from .serializers import UserSerializer
 
 
-class UserAPIView(APIView):
+class RegistrationViewSet(viewsets.ViewSet):
     """Allow access to endpoint"""
 
     permission_classes = (AllowAny,)
+    renderer_classes = (UserJSONRenderer,)
     serializer_class = UserSerializer
 
     def post(self, request):

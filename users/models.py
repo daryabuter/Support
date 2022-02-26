@@ -1,5 +1,5 @@
 from __future__ import unicode_literals
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from django.db import models
 from django.utils import timezone
@@ -83,7 +83,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.first_name + self.last_name
 
     def _generate_jwt_token(self):
-        dt = datetime.now() + timedelta(days=3)
+        dt = datetime.now() + settings.SIMPLE_JWT["ACCESS_TOKEN_LIFETIME"]
 
         token = jwt.encode({'id': self.pk, 'exp': int(dt.strftime('%s'))}, settings.SECRET_KEY, algorithm='HS256')
 
