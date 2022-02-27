@@ -1,4 +1,4 @@
-from .serializers import RegistrationSerializer, LoginSerializer, UserSerializer
+from . import serializers
 from .renderers import UserJSONRenderer
 
 from rest_framework import status, viewsets
@@ -11,7 +11,7 @@ class RegistrationViewSet(viewsets.ViewSet):
 
     permission_classes = (AllowAny,)
     renderer_classes = (UserJSONRenderer,)
-    serializer_class = RegistrationSerializer
+    serializer_class = serializers.RegistrationSerializer
 
     def create(self, request):
         user = request.data.get('user', {})
@@ -25,7 +25,7 @@ class RegistrationViewSet(viewsets.ViewSet):
 class LoginViewSet(viewsets.ViewSet):
     permission_classes = (AllowAny,)
     renderer_classes = (UserJSONRenderer,)
-    serializer_class = LoginSerializer
+    serializer_class = serializers.LoginSerializer
 
     def create(self, request):
         user = request.data.get("user", {})
@@ -38,7 +38,7 @@ class LoginViewSet(viewsets.ViewSet):
 class UserApiView(viewsets.ViewSet):
     permission_classes = (IsAuthenticated,)
     renderer_classes = (UserJSONRenderer,)
-    serializer_class = UserSerializer
+    serializer_class = serializers.UserSerializer
 
     def retrieve(self, request, *args, **kwargs):
         serializer = self.serializer_class(request.user)

@@ -1,7 +1,6 @@
-from django.contrib.auth import authenticate
 from rest_framework import serializers
 from django.db import transaction
-
+from django.contrib.auth import authenticate
 from .models import User
 
 
@@ -13,11 +12,11 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ["email", "first_name", "last_name", "password", "token"]
+        fields = ["first_name", "last_name", "email", "password", "token"]
 
-        @transaction.atomic()
-        def create(self, validated_data):
-            return User.objects.create_user(**validated_data)
+    @transaction.atomic()
+    def create(self, validated_data):
+        return User.objects.create_user(**validated_data)
 
 
 class LoginSerializer(serializers.Serializer):
@@ -44,7 +43,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('email', 'first_name', 'last_name', 'password', 'token')
+        fields = ('first_name', 'last_name', 'email', 'password', 'token')
         read_only_fields = ("token",)
 
     @transaction.atomic()

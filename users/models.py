@@ -14,7 +14,7 @@ class UserManager(BaseUserManager):
     User manager class.
     """
 
-    def create_user(self, email, first_name, last_name, password=None):
+    def create_user(self, first_name, last_name, email, password=None):
         """
         Creates and returns a user.
         """
