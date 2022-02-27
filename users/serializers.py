@@ -39,11 +39,13 @@ class LoginSerializer(serializers.Serializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+
     password = serializers.CharField(max_length=128, min_length=8, write_only=True)
 
     class Meta:
         model = User
-        fields = ['email', 'first_name', 'second_name', 'password', 'token']
+        fields = ('email', 'first_name', 'last_name', 'password', 'token')
+        read_only_fields = ("token",)
 
     @transaction.atomic()
     def update(self, instance, validated_data):
