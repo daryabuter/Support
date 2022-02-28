@@ -10,11 +10,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 dotenv_path = join(dirname(__file__), 'dev.env')
 load_dotenv(dotenv_path)
 
-SECRET_KEY = os.environ.get('SECRET_KEY')
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 DEBUG = True
 
-ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
+ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS").split(" ")
 
 
 INSTALLED_APPS = [
@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'users',
+    'chat',
 ]
 
 MIDDLEWARE = [

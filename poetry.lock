@@ -231,6 +231,17 @@ optional = false
 python-versions = ">=2"
 
 [[package]]
+name = "url"
+version = "0.4.2"
+description = "URL Parsing"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+six = "*"
+
+[[package]]
 name = "virtualenv"
 version = "20.13.2"
 description = "Virtual Python Environment builder"
@@ -264,7 +275,7 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "8afc36980a9c356f8267f28092484954215d5e07b841a44f9d37e8f3a4e7f3ea"
+content-hash = "26e55aeb2a578947b5632f824950b5cd668608b688ae4b7ff35090458b456bcc"
 
 [metadata.files]
 asgiref = [
@@ -435,6 +446,9 @@ transaction = [
 tzdata = [
     {file = "tzdata-2021.5-py2.py3-none-any.whl", hash = "sha256:3eee491e22ebfe1e5cfcc97a4137cd70f092ce59144d81f8924a844de05ba8f5"},
     {file = "tzdata-2021.5.tar.gz", hash = "sha256:68dbe41afd01b867894bbdfd54fa03f468cfa4f0086bfb4adcd8de8f24f3ee21"},
+]
+url = [
+    {file = "url-0.4.2.tar.gz", hash = "sha256:8c6e4a117bfc15664319d8babca016b60dcd84c158729c1fbd309609083697b0"},
 ]
 virtualenv = [
     {file = "virtualenv-20.13.2-py2.py3-none-any.whl", hash = "sha256:e7b34c9474e6476ee208c43a4d9ac1510b041c68347eabfe9a9ea0c86aa0a46b"},
