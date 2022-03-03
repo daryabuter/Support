@@ -1,19 +1,25 @@
 # from django.shortcuts import render
-from django.db.models import Q
+from rest_framework import permissions, viewsets
 
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import permissions
-
-# from django.contrib.auth.models import User
 from .models import ChatBox
-from .serializers import ChatBoxSerializer
+from . import serializers
 
 
-class ChatBoxAPI(APIView):
+class ChatBoxListView(viewsets.ModelViewSet):
+    """Users ChatBox List"""
+
+    serializer_class = serializers.ListChatBoxSerializer
+
+    def get_queryset(self):
+        return (
+            ChatBox.objects.filter(user_id=self.kwargs.get('pk')).select_related('creator').prefetch_related('chat_box')
+        )
+
+
+class ChatBoxView(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
+    queryset = ChatBox.objects.all().select_related('creator').prefetch_related('chat_box')
+    serializers_class = serializers.ChatBoxSerializer
 
-    def get(self, request):
-        chat_box = ChatBox.objects.filter(Q(creator=request.user))
-        serializer = ChatBoxSerializer(chat_box, many=True)
-        return Response({"data": serializer.data})
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)

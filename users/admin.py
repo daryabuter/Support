@@ -4,7 +4,7 @@ from .models import User
 
 
 class UserAdmin(admin.ModelAdmin):
-    list_display = ("first_name", "last_name", "email", "is_staff")
+    list_display = ("first_name", "last_name", "email", "is_staff", "token")
     list_filter = ("is_staff",)
     exclude = ('password',)
 

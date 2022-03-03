@@ -1,3 +1,10 @@
-# from django.contrib import admin
+from django.contrib import admin
+from .models import ChatBox
 
-# Register your models here.
+
+class ChatBoxAdmin(admin.ModelAdmin):
+    list_display = ("creator", "date", "is_active", "is_frozen")
+    list_filter = ("is_active", "is_frozen")
+
+
+admin.site.register(ChatBox, ChatBoxAdmin)
