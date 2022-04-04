@@ -1,25 +1,40 @@
 from rest_framework import serializers
 
-
+from users.serializers import ChatUserSerializer
 from .models import ChatBox
-from message.serializers import ListMessageSerializer
+from message.serializers import ChatMessageSerializer
 
 
 class ChatBoxSerializer(serializers.ModelSerializer):
-    source = 'first_name' + 'second_name'
-    creator = serializers.ReadOnlyField(source=source)
-    supporter = serializers.ReadOnlyField(source=source)
-    messages = ListMessageSerializer(many=True, read_only=True)
+    creator = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
         model = ChatBox
-        fields = ("id", "creator", "supporter", "messages", "datetime", "is_active", "is_frozen")
+        fields = "__all__"
+        read_only_fields = ("supporter", "is_active", "is_frozen", "date")
 
 
-class ListChatBoxSerializer(serializers.ModelSerializer):
-    source = 'first_name' + 'second_name'
-    creator = serializers.ReadOnlyField(source=source)
+class ChatBoxListSerializer(serializers.ModelSerializer):
+    creator = ChatUserSerializer()
+    supporter = ChatUserSerializer()
 
     class Meta:
         model = ChatBox
-        fields = ("id", "creator", "datetime", "is_active", "is_frozen")
+        fields = ("id", "creator", "supporter", "is_active", "is_frozen")
+
+
+class ChatBoxDetailSerializer(serializers.ModelSerializer):
+    creator = ChatUserSerializer()
+    supporter = ChatUserSerializer()
+    messages = ChatMessageSerializer(read_only=True, many=True)
+
+    class Meta:
+        model = ChatBox
+        fields = ("id", "creator", "supporter", "is_active", "is_frozen", "date", "messages")
+
+
+class ChatBoxSupportSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ChatBox
+        fields = ("id", "is_active", "is_frozen")
+        read_only_fields = ("id",)

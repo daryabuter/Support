@@ -13,6 +13,18 @@ services:
   redis:
     image: redis
 
+  celery:
+    image: celery
+    command: celery worker --app=core --loglevel=info
+    volumes:
+      - .:/app
+    env_file:
+      - ./Support_test/dev.env
+    depends_on:
+      - redis
+      - db
+      - django
+
   django:
     restart: always
     command: python manage.py runserver 0.0.0.0:8000
@@ -30,3 +42,4 @@ volumes:
   postgres_data:
   Support_test:
   redis:
+#  celery:

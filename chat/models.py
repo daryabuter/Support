@@ -6,8 +6,10 @@ class ChatBox(models.Model):
     """Chat room model"""
 
     creator = models.ForeignKey(User, verbose_name="Creator", on_delete=models.CASCADE, related_name="creator")
-    supporter = models.ManyToManyField(User, verbose_name="Support", related_name="support")
-    date = models.DateTimeField("Create date", auto_now_add=True)
+    supporter = models.ForeignKey(
+        User, verbose_name="Supporter", related_name="supporter", blank=True, null=True, on_delete=models.CASCADE
+    )
+    date = models.DateTimeField("DTCreate", auto_now_add=True)
     is_active = models.BooleanField(default=True, verbose_name='Status')
     is_frozen = models.BooleanField(default=False, verbose_name='Is frozen')
 
@@ -16,4 +18,4 @@ class ChatBox(models.Model):
         verbose_name_plural = "Chats"
 
     def __str__(self):
-        return "{} - {}".format(self.creator, self.is_active)
+        return str(self.pk)
