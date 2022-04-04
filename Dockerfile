@@ -1,4 +1,4 @@
-FROM python:3.9
+FROM python:3.9.6
 
 ENV POETRY_VERSION=1.1.13
 ENV PYTHONUNBUFFERED=1
@@ -15,4 +15,4 @@ RUN poetry config virtualenvs.create false \
   && poetry install
 COPY . /app
 
-#CMD ["./entrypoint.sh"]
+CMD ["./entrypoint.sh"]

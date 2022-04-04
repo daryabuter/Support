@@ -1,40 +1,57 @@
 from __future__ import unicode_literals
-from django.db import models, transaction
+
+from datetime import datetime
+from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
+import jwt
+
+from Support_test import settings
 
 
 class UserManager(BaseUserManager):
-    def _create_user(self, email, password, **extra_fields):
+    """
+    User manager class.
+    """
+
+    def create_user(self, first_name, last_name, email, password=None):
         """
-        Creates and saves a User with the given email,and password.
+        Creates and returns a user.
         """
-        if not email:
-            raise ValueError('The given email must be set')
-        try:
-            with transaction.atomic():
-                user = self.model(email=email, **extra_fields)
-                user.set_password(password)
-                user.save(using=self._db)
-                return user
-        except Exception:
-            raise Exception('The given email must be set')
+        if first_name is None:
+            raise TypeError('Users must have a first name.')
 
-    def create_user(self, email, password=None, **extra_fields):
-        extra_fields.setdefault('is_staff', False)
-        extra_fields.setdefault('is_superuser', False)
-        return self._create_user(email, password, **extra_fields)
+        if last_name is None:
+            raise TypeError('Users must have a second name.')
 
-    def create_superuser(self, email, password, **extra_fields):
-        extra_fields.setdefault('is_staff', True)
-        extra_fields.setdefault('is_superuser', True)
+        if email is None:
+            raise TypeError('Users must have an email address.')
 
-        return self._create_user(email, password=password, **extra_fields)
+        user = self.model(first_name=first_name, last_name=last_name, email=self.normalize_email(email))
+        user.set_password(password)
+        user.save()
+
+        return user
+
+    def create_superuser(self, first_name, last_name, email, password):
+        """
+        Creates and returns a superuser.
+        """
+
+        if password is None:
+            raise TypeError('Superusers must have a password.')
+
+        user = self.create_user(first_name, last_name, email, password)
+        user.is_superuser = True
+        user.is_staff = True
+        user.save()
+
+        return user
 
 
 class User(AbstractBaseUser, PermissionsMixin):
     """
-    Customm User Model
+    Custom User Model
     """
 
     email = models.EmailField(max_length=40, unique=True)
@@ -48,6 +65,26 @@ class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name']
 
-    def save(self, *args, **kwargs):
-        super(User, self).save(*args, **kwargs)
-        return self
+    def __str__(self):
+        return self.email
+
+    @property
+    def token(self):
+        """
+        User.token is self._generate_jwt_token()
+        """
+        return self._generate_jwt_token()
+
+    def get_full_name(self):
+        return self.first_name + self.last_name
+
+    def _generate_jwt_token(self):
+        dt = datetime.now() + settings.SIMPLE_JWT["ACCESS_TOKEN_LIFETIME"]
+
+        token = jwt.encode(
+            {'id': self.pk, 'exp': dt.utcfromtimestamp(dt.timestamp())},
+            settings.SECRET_KEY,
+            algorithm=settings.SIMPLE_JWT["ALGORITHM"],
+        )
+
+        return token
