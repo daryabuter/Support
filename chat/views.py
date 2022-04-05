@@ -22,6 +22,8 @@ class ChatBoxView(
 ):
     """
     ChatBox ViewSet
+    Actions:
+    create(), list(), retrieve(), update() - only fot supporters, destroy()
     """
 
     permission_classes = [permissions.IsAuthenticated]
@@ -29,6 +31,10 @@ class ChatBoxView(
     queryset = ChatBox.objects.all()
 
     def update(self, request, *args, **kwargs):
+        """
+        Supporter can change fields:
+        is_active(), is_frozen()
+        """
         if request.user.is_staff:
             instance = self.get_object()
             serializer = self.get_serializer(instance, data=request.data, partial=True)
@@ -39,6 +45,10 @@ class ChatBoxView(
             return Response(data="You dont have permissions", status=status.HTTP_400_BAD_REQUEST)
 
     def get_queryset(self):
+        """
+        Support sees all chats
+        User only those in which he is a member
+        """
         queryset = self.queryset
         if self.request.user.is_staff:
             query_set = queryset.all()
@@ -59,18 +69,29 @@ class ChatBoxView(
 
     @action(methods=['get'], detail=False, permission_classes=[permissions.IsAdminUser])
     def personal_support_chats(self, request):
+        """
+        Chats in which the supporter is a member
+        """
         chats = ChatBox.objects.filter(Q(creator=self.request.user) | Q(supporter=self.request.user))
         serializer = serializers.ChatBoxListSerializer(chats, many=True)
         return Response(serializer.data)
 
     @action(methods=['get'], detail=False, permission_classes=[permissions.IsAdminUser])
     def active(self, request):
+        """
+        List of active chats
+        """
         chats = ChatBox.objects.filter(is_active=True)
         serializer = serializers.ChatBoxListSerializer(chats, many=True)
         return Response(serializer.data)
 
     @action(methods=['get'], detail=False, permission_classes=[permissions.IsAdminUser])
     def frozen(self, request):
+        """
+
+        :param request:
+        :return:
+        """
         chats = ChatBox.objects.filter(is_frozen=True)
         serializer = serializers.ChatBoxListSerializer(chats, many=True)
         return Response(serializer.data)
