@@ -15,7 +15,9 @@ services:
 
   celery:
     image: celery
-    command: celery worker --app=core --loglevel=info
+    build:
+      context: .
+    command: celery -A Support_test worker --loglevel=info
     volumes:
       - .:/app
     env_file:
