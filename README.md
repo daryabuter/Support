@@ -54,7 +54,7 @@ There are two access classes:
 ### Supporter can:
 
 - add messages to a chat created by a user
-- see all applications
+- see all orders
 - see active orders
 - see frozen orders
 - change the status of an order
