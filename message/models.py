@@ -5,6 +5,8 @@ from chat.models import ChatBox
 
 
 class Message(models.Model):
+    """Message model"""
+
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user')
     chat_box = models.ForeignKey(ChatBox, on_delete=models.CASCADE, related_name='messages')
     text = models.CharField(max_length=500, blank=True)

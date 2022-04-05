@@ -88,9 +88,7 @@ class ChatBoxView(
     @action(methods=['get'], detail=False, permission_classes=[permissions.IsAdminUser])
     def frozen(self, request):
         """
-
-        :param request:
-        :return:
+        List of frozen chats
         """
         chats = ChatBox.objects.filter(is_frozen=True)
         serializer = serializers.ChatBoxListSerializer(chats, many=True)
@@ -98,14 +96,20 @@ class ChatBoxView(
 
     @action(methods=['post'], detail=True, permission_classes=[permissions.IsAuthenticated])
     def create_message(self, request, *args, **kwargs):
+        """
+        Create chat messages.
+        Only users who are in the chat can create
+        """
         chat = self.get_object()
         if request.user == chat.supporter or request.user == chat.creator:
             request.data['chat_box'] = chat.pk
             serializer = self.get_serializer(data=request.data)
             if serializer.is_valid(raise_exception=True):
                 serializer.save()
+                # celery task activation when a new supporter message appears in the chat
                 if request.user.is_staff:
                     send_email_tasks(chat.pk)
+
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -114,11 +118,16 @@ class ChatBoxView(
 
     @action(methods=['put'], detail=True, permission_classes=[permissions.IsAdminUser])
     def connect(self, request, *args, **kwargs):
+        """
+        Connecting a supporter to a chat
+        P.s. The user cannot connect. It connects when creating a chat
+        """
         instance = self.get_object()
         chat = ChatBox.objects.get(pk=instance.pk)
         serializer = self.get_serializer(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         if serializer.is_valid():
+            # connection if there are no supporters in the chat
             if not chat.supporter and request.user.is_staff:
                 serializer.save(supporter=self.request.user)
                 return Response(status=status.HTTP_201_CREATED)
