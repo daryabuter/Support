@@ -9,7 +9,7 @@ My test task
 
  **1) Fork the repository**
 
- **2) Клонировать репозиторий**
+ **2) Clone repository**
 
 `git clone ref_generated_in_your_repository` 
 
