@@ -6,6 +6,10 @@ from message.serializers import ChatMessageSerializer
 
 
 class ChatBoxSerializer(serializers.ModelSerializer):
+    """
+    Serialization is about creation. Creator fills in automatically
+    """
+
     creator = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
@@ -15,6 +19,10 @@ class ChatBoxSerializer(serializers.ModelSerializer):
 
 
 class ChatBoxListSerializer(serializers.ModelSerializer):
+    """
+    Serialization for list action.
+    """
+
     creator = ChatUserSerializer()
     supporter = ChatUserSerializer()
 
@@ -24,6 +32,10 @@ class ChatBoxListSerializer(serializers.ModelSerializer):
 
 
 class ChatBoxDetailSerializer(serializers.ModelSerializer):
+    """
+    Detail serialization.
+    """
+
     creator = ChatUserSerializer()
     supporter = ChatUserSerializer()
     messages = ChatMessageSerializer(read_only=True, many=True)
@@ -34,6 +46,10 @@ class ChatBoxDetailSerializer(serializers.ModelSerializer):
 
 
 class ChatBoxSupportSerializer(serializers.ModelSerializer):
+    """
+    Serialization for update() action
+    """
+
     class Meta:
         model = ChatBox
         fields = ("id", "is_active", "is_frozen")

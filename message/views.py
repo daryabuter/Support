@@ -11,6 +11,11 @@ from . import serializers
 class MessageViewSet(
     mixins.CreateModelMixin, mixins.RetrieveModelMixin, mixins.DestroyModelMixin, mixins.ListModelMixin, GenericViewSet
 ):
+    """
+    CRUD Message model
+    P.s. Update(): Users can only change the text of the message
+    """
+
     permission_classes = [permissions.IsAuthenticated]
     queryset = Message.objects.all()
     serializer_class = serializers.MessageSerializer

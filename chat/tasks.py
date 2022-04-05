@@ -15,6 +15,7 @@ def sleepy(duration):
 
 @shared_task
 def send_email_tasks(chat_pk):
+    """Celery task for sending email"""
     with open('email_templ') as f_input:
         list_data = f_input.read()
         template = list_data.split('\n\n')
