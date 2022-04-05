@@ -9,6 +9,7 @@ from rest_framework.viewsets import GenericViewSet
 from .models import ChatBox
 from . import serializers
 from message.serializers import MessageSerializer
+from .tasks import send_email_tasks
 
 
 class ChatBoxView(
@@ -73,11 +74,13 @@ class ChatBoxView(
     @action(methods=['post'], detail=True, permission_classes=[permissions.IsAuthenticated])
     def create_message(self, request, *args, **kwargs):
         chat = self.get_object()
-        if request.user == chat.supporter:
+        if request.user == chat.supporter or request.user == chat.creator:
             request.data['chat_box'] = chat.pk
             serializer = self.get_serializer(data=request.data)
             if serializer.is_valid(raise_exception=True):
                 serializer.save()
+                if request.user.is_staff:
+                    send_email_tasks(chat.pk)
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
