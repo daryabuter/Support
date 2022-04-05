@@ -20,6 +20,10 @@ class ChatBoxView(
     mixins.ListModelMixin,
     GenericViewSet,
 ):
+    """
+    ChatBox ViewSet
+    """
+
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = serializers.ChatBoxSerializer
     queryset = ChatBox.objects.all()
@@ -94,7 +98,7 @@ class ChatBoxView(
         serializer = self.get_serializer(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         if serializer.is_valid():
-            if not chat.supporter:
+            if not chat.supporter and request.user.is_staff:
                 serializer.save(supporter=self.request.user)
                 return Response(status=status.HTTP_201_CREATED)
             else:

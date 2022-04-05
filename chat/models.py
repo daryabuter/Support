@@ -3,7 +3,7 @@ from users.models import User
 
 
 class ChatBox(models.Model):
-    """Chat room model"""
+    """Chat model"""
 
     creator = models.ForeignKey(User, verbose_name="Creator", on_delete=models.CASCADE, related_name="creator")
     supporter = models.ForeignKey(
